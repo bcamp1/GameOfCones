@@ -1,0 +1,93 @@
+# depslib dependency file v1.0
+1512591219 source:/home/branson/Desktop/Robotoid/Collision.cpp
+	<Graphics.hpp>
+	<map>
+	"Collision.h"
+
+1512590806 /home/branson/Desktop/Robotoid/Collision.h
+
+1512660835 source:/home/branson/Desktop/Robotoid/Entity.cpp
+	"SFML/Graphics.hpp"
+	<iostream>
+	"Entity.h"
+
+1512176479 /home/branson/Desktop/Robotoid/Entity.h
+	<iostream>
+
+1513100245 source:/home/branson/Desktop/Robotoid/Game.cpp
+	"Game.h"
+	"Robot.h"
+	"Block.h"
+	<iostream>
+	<math.h>
+	"Collision.h"
+
+1513102993 /home/branson/Desktop/Robotoid/Game.h
+	<SFML/Graphics.hpp>
+	"Robot.h"
+	"Block.h"
+
+1512660994 /home/branson/Desktop/Robotoid/Robot.h
+	"Entity.h"
+	<Graphics.hpp>
+	<iostream>
+
+1512661377 /home/branson/Desktop/Robotoid/Block.h
+	"Entity.h"
+	<iostream>
+	<SFML/Graphics.hpp>
+
+1511985690 source:/home/branson/Desktop/Robotoid/main.cpp
+	<iostream>
+	"Game.h"
+
+1511988143 source:/home/branson/Desktop/Robotoid/Robot.cpp
+
+1512160974 source:/home/branson/Desktop/Robotoid/src/Block.cpp
+
+1512591219 source:/home/branson/Desktop/CameOfCones/Collision.cpp
+	<Graphics.hpp>
+	<map>
+	"Collision.h"
+
+1512590806 /home/branson/Desktop/CameOfCones/Collision.h
+
+1512660835 source:/home/branson/Desktop/CameOfCones/Entity.cpp
+	"SFML/Graphics.hpp"
+	<iostream>
+	"Entity.h"
+
+1512176479 /home/branson/Desktop/CameOfCones/Entity.h
+	<iostream>
+
+1513100245 source:/home/branson/Desktop/CameOfCones/Game.cpp
+	"Game.h"
+	"Robot.h"
+	"Block.h"
+	<iostream>
+	<math.h>
+	"Collision.h"
+
+1513103190 /home/branson/Desktop/CameOfCones/Game.h
+	<SFML/Graphics.hpp>
+	"Robot.h"
+	"Block.h"
+
+1512660994 /home/branson/Desktop/CameOfCones/Robot.h
+	"Entity.h"
+	<Graphics.hpp>
+	<iostream>
+
+1512661377 /home/branson/Desktop/CameOfCones/Block.h
+	"Entity.h"
+	<iostream>
+	<SFML/Graphics.hpp>
+
+1511985690 source:/home/branson/Desktop/CameOfCones/main.cpp
+	<iostream>
+	"Game.h"
+
+1511988143 source:/home/branson/Desktop/CameOfCones/Robot.cpp
+
+1512160974 source:/home/branson/Desktop/CameOfCones/src/Block.cpp
+

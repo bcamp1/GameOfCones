@@ -1,0 +1,77 @@
+# depslib dependency file v1.0
+1511985690 source:/home/branson/Desktop/Robotoid/main.cpp
+	<iostream>
+	"Game.h"
+
+1511988986 /home/branson/Desktop/Robotoid/include/Game.h
+	<SFML/Graphics.hpp>
+
+1513099825 /home/branson/Desktop/Robotoid/Game.h
+	<SFML/Graphics.hpp>
+	"Robot.h"
+	"Block.h"
+
+1511985383 /home/branson/Desktop/Robotoid/Game.cpp
+	"Game.h"
+	<iostream>
+
+1511988685 source:/home/branson/Desktop/Robotoid/src/Game.cpp
+	"Game.h"
+	"Robot.h"
+	<iostream>
+
+1511987738 source:/home/branson/Desktop/Robotoid/src/Entity.cpp
+	"SFML/Graphics.hpp"
+	<iostream>
+	"Entity.h"
+
+1511987762 /home/branson/Desktop/Robotoid/include/Entity.h
+
+1511988489 /home/branson/Desktop/Robotoid/include/Robot.h
+	"Entity.h"
+	<Graphics.hpp>
+	<iostream>
+
+1511988143 source:/home/branson/Desktop/Robotoid/src/Robot.cpp
+
+1512660835 source:/home/branson/Desktop/Robotoid/Entity.cpp
+	"SFML/Graphics.hpp"
+	<iostream>
+	"Entity.h"
+
+1512176479 /home/branson/Desktop/Robotoid/Entity.h
+	<iostream>
+
+1511988143 source:/home/branson/Desktop/Robotoid/Robot.cpp
+
+1512660994 /home/branson/Desktop/Robotoid/Robot.h
+	"Entity.h"
+	<Graphics.hpp>
+	<iostream>
+
+1513100110 source:/home/branson/Desktop/Robotoid/Game.cpp
+	"Game.h"
+	"Robot.h"
+	"Block.h"
+	<iostream>
+	<math.h>
+	"Collision.h"
+
+1512661377 /home/branson/Desktop/Robotoid/Block.h
+	"Entity.h"
+	<iostream>
+	<SFML/Graphics.hpp>
+
+1512161125 /home/branson/Desktop/Robotoid/include/Block.h
+	<iostream>
+	<SFML/Graphics.hpp>
+
+1512160974 source:/home/branson/Desktop/Robotoid/src/Block.cpp
+
+1512590806 /home/branson/Desktop/Robotoid/Collision.h
+
+1512591219 source:/home/branson/Desktop/Robotoid/Collision.cpp
+	<Graphics.hpp>
+	<map>
+	"Collision.h"
+
