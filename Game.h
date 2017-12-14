@@ -27,6 +27,6 @@ class Game
         sf::Texture tx;
         sf::Sprite arena;
 
-        Robot player1, player2, bot1, bot2;
+        vector <Robot> bots;
         vector<Block> blocks;
 };

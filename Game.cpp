@@ -7,10 +7,6 @@
 #define PI 3.14159265
 using namespace std;
 Game::Game()
-: player1(920, 950, 0),
-player2(50, 50, 1),
-bot1(800, 950, 0),
-bot2(200, 50, 1)
 {
     tx.loadFromFile("arena.png");
     arena.setTexture(tx);
@@ -21,6 +17,12 @@ bot2(200, 50, 1)
     for (int i = 0; i < 8; i++) {
         blocks.push_back(Block(1, -100*i + 800, 100*i + 100));
     }
+
+    bots.push_back(Robot(920, 950, 0));
+    bots.push_back(Robot(50, 50, 1));
+    bots.push_back(Robot(800, 950, 0));
+    bots.push_back(Robot(200, 50, 1));
+
     while (window.isOpen())
     {
         events(window);
@@ -35,55 +37,53 @@ bot2(200, 50, 1)
 void Game::loop() {
     keyboard();
     if (right) {
-        player1.sprite.rotate(turn_angle);
+        bots.at(0).sprite.rotate(turn_angle);
     }
     if (left) {
-        player1.sprite.rotate(-turn_angle);
+        bots.at(0).sprite.rotate(-turn_angle);
     }
     if (down) {
-        moveAway(player1, -player1.sprite.getRotation());
+        moveAway(bots.at(0), -bots.at(0).sprite.getRotation());
     }
     else if (up) {
-        moveToward(player1, -player1.sprite.getRotation());
+        moveToward(bots.at(0), -bots.at(0).sprite.getRotation());
 
     }
 
     if (!up && !down) {
-        player1.velX = 0;
-        player1.velY = 0;
+        bots.at(0).velX = 0;
+        bots.at(0).velY = 0;
     }
 
     if (right2) {
-        player2.sprite.rotate(turn_angle);
+        bots.at(1).sprite.rotate(turn_angle);
     }
     if (left2) {
-        player2.sprite.rotate(-turn_angle);
+        bots.at(1).sprite.rotate(-turn_angle);
     }
     if (down2) {
-        moveAway(player2, -player2.sprite.getRotation());
+        moveAway(bots.at(1), -bots.at(1).sprite.getRotation());
     }
     else if (up2) {
-        moveToward(player2, -player2.sprite.getRotation());
+        moveToward(bots.at(1), -bots.at(1).sprite.getRotation());
     }
 
     if (!up2 && !down2) {
-        player2.velX = 0;
-        player2.velY = 0;
+        bots.at(1).velX = 0;
+        bots.at(1).velY = 0;
     }
 
     for (int i = 0; i < blocks.size(); i++) {
-        if (Collision::PixelPerfectTest(player1.sprite, blocks.at(i).sprite)) {
-            blocks.at(i).velX = player1.velX;
-            blocks.at(i).velY = player1.velY;
-            blocks.at(i).sprite.setRotation(player1.sprite.getRotation());
-
-        } else if (Collision::PixelPerfectTest(player2.sprite, blocks.at(i).sprite)) {
-            blocks.at(i).velX = player2.velX;
-            blocks.at(i).velY = player2.velY;
-            blocks.at(i).sprite.setRotation(player2.sprite.getRotation());
-        } else {
-            blocks.at(i).velX = 0;
-            blocks.at(i).velY = 0;
+        for (int j = 0; j < bots.size(); j++) {
+            if (Collision::PixelPerfectTest(bots.at(j).sprite, blocks.at(i).sprite, 0)) {
+                blocks.at(i).velX = bots.at(j).velX;
+                blocks.at(i).velY = bots.at(j).velY;
+                blocks.at(i).sprite.setRotation(bots.at(j).sprite.getRotation());
+            } else {
+                ///TODO: Fix this
+                //blocks.at(i).velX = 0;
+                //blocks.at(i).velY = 0;
+            }
         }
     }
 }
@@ -140,12 +140,9 @@ void Game::keyboard() {
 
 void Game::render(sf::RenderWindow& window) {
     window.draw(arena);
-    //block.show(window);
-    player1.show(window);
-    player2.show(window);
-    bot1.show(window);
-    bot2.show(window);
-
+    for (int i = 0; i < 4; i++) {
+        bots.at(i).show(window);
+    }
     for (int i = 0; i < blocks.size(); i++) {
         blocks.at(i).show(window);
     }
