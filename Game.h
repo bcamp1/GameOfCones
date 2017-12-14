@@ -20,6 +20,7 @@ class Game
         bool up2 = false, down2 = false, left2 = false, right2 = false;
         void moveToward(Entity& entity, float angle);
         void moveAway(Entity& entity, float angle);
+        int whichBotAttached(Block block);
 
         const float turn_angle = 1.25;
         const float speed = 2.5;

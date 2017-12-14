@@ -18,10 +18,10 @@ Game::Game()
         blocks.push_back(Block(1, -100*i + 800, 100*i + 100));
     }
 
-    bots.push_back(Robot(920, 950, 0));
-    bots.push_back(Robot(50, 50, 1));
-    bots.push_back(Robot(800, 950, 0));
-    bots.push_back(Robot(200, 50, 1));
+    bots.push_back(Robot(920, 950, 0)); //Player1
+    bots.push_back(Robot(50, 50, 1));   //Player2
+    bots.push_back(Robot(800, 950, 0)); //bot1
+    bots.push_back(Robot(200, 50, 1));  //bot2
 
     while (window.isOpen())
     {
@@ -36,106 +36,54 @@ Game::Game()
 
 void Game::loop() {
     keyboard();
-    if (right) {
-        bots.at(0).sprite.rotate(turn_angle);
-    }
-    if (left) {
-        bots.at(0).sprite.rotate(-turn_angle);
-    }
-    if (down) {
-        moveAway(bots.at(0), -bots.at(0).sprite.getRotation());
-    }
-    else if (up) {
-        moveToward(bots.at(0), -bots.at(0).sprite.getRotation());
-
-    }
-
+    //Player 1 movement
+    if (right) {bots.at(0).sprite.rotate(turn_angle);}
+    if (left) {bots.at(0).sprite.rotate(-turn_angle);}
+    if (down) {moveAway(bots.at(0), -bots.at(0).sprite.getRotation());}
+    else if (up) {moveToward(bots.at(0), -bots.at(0).sprite.getRotation());}
     if (!up && !down) {
         bots.at(0).velX = 0;
         bots.at(0).velY = 0;
     }
 
-    if (right2) {
-        bots.at(1).sprite.rotate(turn_angle);
-    }
-    if (left2) {
-        bots.at(1).sprite.rotate(-turn_angle);
-    }
-    if (down2) {
-        moveAway(bots.at(1), -bots.at(1).sprite.getRotation());
-    }
-    else if (up2) {
-        moveToward(bots.at(1), -bots.at(1).sprite.getRotation());
-    }
-
+    //Player 2 movement
+    if (right2) {bots.at(1).sprite.rotate(turn_angle);}
+    if (left2) {bots.at(1).sprite.rotate(-turn_angle);}
+    if (down2) {moveAway(bots.at(1), -bots.at(1).sprite.getRotation());}
+    else if (up2) {moveToward(bots.at(1), -bots.at(1).sprite.getRotation());}
     if (!up2 && !down2) {
         bots.at(1).velX = 0;
         bots.at(1).velY = 0;
     }
 
     for (int i = 0; i < blocks.size(); i++) {
-        for (int j = 0; j < bots.size(); j++) {
-            if (Collision::PixelPerfectTest(bots.at(j).sprite, blocks.at(i).sprite, 0)) {
-                blocks.at(i).velX = bots.at(j).velX;
-                blocks.at(i).velY = bots.at(j).velY;
-                blocks.at(i).sprite.setRotation(bots.at(j).sprite.getRotation());
-            } else {
-                ///TODO: Fix this
-                //blocks.at(i).velX = 0;
-                //blocks.at(i).velY = 0;
-            }
+        int which = whichBotAttached(blocks.at(i));
+        if (which != -1) {
+            blocks.at(i).velX = bots.at(which).velX;
+            blocks.at(i).velY = bots.at(which).velY;
+            blocks.at(i).sprite.setRotation(bots.at(which).sprite.getRotation());
+        } else {
+            blocks.at(i).velX = 0;
+            blocks.at(i).velY = 0;
         }
     }
 }
 
 void Game::keyboard() {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        right = true;
-    } else {
-        right = false;
-    }
+    /*
+    Player Movement
+    Player1 - WASD
+    Player2 - Arrow Keys
+    */
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {right = true;} else {right = false;}
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {left = true;} else {left = false;}
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {up = true;} else {up = false;}
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {down = true;} else {down = false;}
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        left = true;
-    } else {
-        left = false;
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        up = true;
-    } else {
-       up = false;
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        down = true;
-    } else {
-        down = false;
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        right2 = true;
-    } else {
-        right2 = false;
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        left2 = true;
-    } else {
-        left2 = false;
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-        up2 = true;
-    } else {
-       up2 = false;
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        down2 = true;
-    } else {
-        down2 = false;
-    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {right2 = true;} else {right2 = false;}
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {left2 = true;} else {left2 = false;}
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {up2 = true;} else {up2 = false;}
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {down2 = true;} else {down2 = false;}
 }
 
 void Game::render(sf::RenderWindow& window) {
@@ -175,4 +123,14 @@ void Game::moveAway(Entity& entity, float angle) {
     angle *= PI/180;
     entity.velY = d * cos(angle);
     entity.velX = d * sin(angle);
+}
+
+//If returned -1, block isn't attached to a bot
+int Game::whichBotAttached(Block block) {
+    for (int i = 0; i < bots.size(); i++) {
+        if (Collision::PixelPerfectTest(bots.at(i).sprite, block.sprite)) {
+            return i;
+        }
+    }
+    return -1;
 }
