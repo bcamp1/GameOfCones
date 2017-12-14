@@ -15,6 +15,7 @@ class Robot: public Entity
                     fname = "robot-blue.png";
                 } else {
                     fname = "robot-red.png";
+                    sprite.rotate(180);
                 }
         }
     float speed = 0.5;

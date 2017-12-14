@@ -18,9 +18,11 @@ class Game
         const float screenHeight = 1000;
         bool up = false, down = false, left = false, right = false;
         bool up2 = false, down2 = false, left2 = false, right2 = false;
-        void moveToward(Entity& entity, float angle);
-        void moveAway(Entity& entity, float angle);
         int whichBotAttached(Block block);
+        void moveTo(Entity& entity, float spd, float angle);
+
+        float getVelX(float spd, float angle);
+        float getVelY(float spd, float angle);
 
         const float turn_angle = 1.25;
         const float speed = 2.5;

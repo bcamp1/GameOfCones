@@ -41,8 +41,8 @@ void Game::loop() {
     //Player 1 movement
     if (right) {bots.at(0).sprite.rotate(turn_angle);}
     if (left) {bots.at(0).sprite.rotate(-turn_angle);}
-    if (down) {moveAway(bots.at(0), -bots.at(0).sprite.getRotation());}
-    else if (up) {moveToward(bots.at(0), -bots.at(0).sprite.getRotation());}
+    if (down) {moveTo(bots.at(0), -speed, -bots.at(0).sprite.getRotation());}
+    else if (up) {moveTo(bots.at(0), speed, -bots.at(0).sprite.getRotation());}
     if (!up && !down) {
         bots.at(0).velX = 0;
         bots.at(0).velY = 0;
@@ -51,8 +51,8 @@ void Game::loop() {
     //Player 2 movement
     if (right2) {bots.at(1).sprite.rotate(turn_angle);}
     if (left2) {bots.at(1).sprite.rotate(-turn_angle);}
-    if (down2) {moveAway(bots.at(1), -bots.at(1).sprite.getRotation());}
-    else if (up2) {moveToward(bots.at(1), -bots.at(1).sprite.getRotation());}
+    if (down2) {moveTo(bots.at(1), -speed, -bots.at(1).sprite.getRotation());}
+    else if (up2) {moveTo(bots.at(1), speed, -bots.at(1).sprite.getRotation());}
     if (!up2 && !down2) {
         bots.at(1).velX = 0;
         bots.at(1).velY = 0;
@@ -112,19 +112,9 @@ void Game::rotateBot(Robot& bot, float angle) {
     bot.sprite.setRotation(angle);
 }
 
-void Game::moveToward(Entity& entity, float angle) {
-    float d = speed;
-    angle -= 180;
-    angle *= PI/180;
-    entity.velY = d * cos(angle);
-    entity.velX = d * sin(angle);
-}
-void Game::moveAway(Entity& entity, float angle) {
-    float d = -speed;
-    angle -= 180;
-    angle *= PI/180;
-    entity.velY = d * cos(angle);
-    entity.velX = d * sin(angle);
+void Game::moveTo(Entity& entity, float spd, float angle) {
+    entity.velX = getVelX(spd, angle);
+    entity.velY = getVelY(spd, angle);
 }
 
 //If returned -1, block isn't attached to a bot
@@ -135,4 +125,16 @@ int Game::whichBotAttached(Block block) {
         }
     }
     return -1;
+}
+
+float Game::getVelX(float spd, float angle) {
+    angle -= 180;
+    angle *= PI/180;
+    return spd * sin(angle);
+}
+
+float Game::getVelY(float spd, float angle) {
+    angle -= 180;
+    angle *= PI/180;
+    return spd * cos(angle);
 }
