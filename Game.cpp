@@ -10,8 +10,10 @@ using namespace std;
 
 Game::Game()
 {
-    tx.loadFromFile("arena.png");
-    arena.setTexture(tx);
+    arena_tx.loadFromFile("arena.png");
+    arena.setTexture(arena_tx);
+    walls_tx.loadFromFile("walls.png");
+    walls.setTexture(walls_tx);
     sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Game of Cones");
     for (int i = 0; i < 8; i++) {
         blocks.push_back(Block(0, 100*i + 100, 100*i + 100));
@@ -20,10 +22,10 @@ Game::Game()
         blocks.push_back(Block(1, -100*i + 800, 100*i + 100));
     }
 
-    bots.push_back(Robot(920, 950, 0)); //Player1
-    bots.push_back(Robot(50, 50, 1));   //Player2
-    bots.push_back(Robot(800, 950, 0)); //bot1
-    bots.push_back(Robot(200, 50, 1));  //bot2
+    bots.push_back(Robot(939, 939, 0)); //Player1
+    bots.push_back(Robot(61, 61, 1));   //Player2
+    bots.push_back(Robot(820, 939, 0)); //bot1
+    bots.push_back(Robot(180, 61, 1));  //bot2
 
     while (window.isOpen())
     {
@@ -39,8 +41,8 @@ Game::Game()
 void Game::loop() {
     keyboard();
     //Player 1 movement
-    if (right) {bots.at(0).sprite.rotate(turn_angle);}
-    if (left) {bots.at(0).sprite.rotate(-turn_angle);}
+    if (right) {rotateTo(bots.at(0), turn_angle);}
+    if (left) {rotateTo(bots.at(0), -turn_angle);}
     if (down) {moveTo(bots.at(0), -speed, -bots.at(0).sprite.getRotation());}
     else if (up) {moveTo(bots.at(0), speed, -bots.at(0).sprite.getRotation());}
     if (!up && !down) {
@@ -49,8 +51,8 @@ void Game::loop() {
     }
 
     //Player 2 movement
-    if (right2) {bots.at(1).sprite.rotate(turn_angle);}
-    if (left2) {bots.at(1).sprite.rotate(-turn_angle);}
+    if (right2) {rotateTo(bots.at(1), turn_angle);}
+    if (left2) {rotateTo(bots.at(1), -turn_angle);}
     if (down2) {moveTo(bots.at(1), -speed, -bots.at(1).sprite.getRotation());}
     else if (up2) {moveTo(bots.at(1), speed, -bots.at(1).sprite.getRotation());}
     if (!up2 && !down2) {
@@ -72,11 +74,6 @@ void Game::loop() {
 }
 
 void Game::keyboard() {
-    /*
-    Player Movement
-    Player1 - WASD
-    Player2 - Arrow Keys
-    */
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {right = true;} else {right = false;}
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {left = true;} else {left = false;}
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {up = true;} else {up = false;}
@@ -90,6 +87,7 @@ void Game::keyboard() {
 
 void Game::render(sf::RenderWindow& window) {
     window.draw(arena);
+    //window.draw(walls);
     for (int i = 0; i < 4; i++) {
         bots.at(i).show(window);
     }
@@ -113,8 +111,22 @@ void Game::rotateBot(Robot& bot, float angle) {
 }
 
 void Game::moveTo(Entity& entity, float spd, float angle) {
-    entity.velX = getVelX(spd, angle);
-    entity.velY = getVelY(spd, angle);
+    entity.sprite.move({getVelX(spd, angle), getVelY(spd, angle)});
+    if (!Collision::PixelPerfectTest(entity.sprite, walls, 0)) {
+        entity.sprite.move({-getVelX(spd, angle), -getVelY(spd, angle)});
+        entity.velX = getVelX(spd, angle);
+        entity.velY = getVelY(spd, angle);
+    } else {
+        entity.velX = 0;
+        entity.velY = 0;
+    }
+}
+
+void Game::rotateTo(Entity& entity, float angle) {
+    entity.sprite.rotate(angle);
+    if (Collision::PixelPerfectTest(entity.sprite, walls, 0)) {
+        entity.sprite.rotate(-angle);
+    }
 }
 
 //If returned -1, block isn't attached to a bot

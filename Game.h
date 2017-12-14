@@ -20,6 +20,7 @@ class Game
         bool up2 = false, down2 = false, left2 = false, right2 = false;
         int whichBotAttached(Block block);
         void moveTo(Entity& entity, float spd, float angle);
+        void rotateTo(Entity& entity, float angle);
 
         float getVelX(float spd, float angle);
         float getVelY(float spd, float angle);
@@ -27,8 +28,11 @@ class Game
         const float turn_angle = 1.25;
         const float speed = 2.5;
 
-        sf::Texture tx;
+        sf::Texture arena_tx;
         sf::Sprite arena;
+
+        sf::Texture walls_tx;
+        sf::Sprite walls;
 
         vector <Robot> bots;
         vector<Block> blocks;
