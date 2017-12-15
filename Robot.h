@@ -1,7 +1,7 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 #include "Entity.h"
-#include <Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 using namespace std;
 

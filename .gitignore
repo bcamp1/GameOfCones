@@ -6,3 +6,5 @@ include/
 src/
 Makefile
 *.cbp
+*.o
+sfml-app
