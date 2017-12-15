@@ -4,3 +4,4 @@ cachegrind.*
 bin/
 include/
 src/
+*.cbp
