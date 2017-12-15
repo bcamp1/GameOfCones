@@ -5,3 +5,4 @@ bin/
 include/
 src/
 Makefile
+*.cbp
