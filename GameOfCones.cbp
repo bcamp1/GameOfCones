@@ -41,6 +41,7 @@
 		<Unit filename="Entity.h" />
 		<Unit filename="Game.cpp" />
 		<Unit filename="Game.h" />
+		<Unit filename="Robot.cpp" />
 		<Unit filename="Robot.h" />
 		<Unit filename="include/Block.h" />
 		<Unit filename="main.cpp" />
