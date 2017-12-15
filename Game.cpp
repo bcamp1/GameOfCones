@@ -38,26 +38,30 @@ Game::Game()
 
 }
 
-void Game::loop() {
+void Game::loop()
+{
+    whichSide(blocks.at(7), bots.at(0));
     keyboard();
     //Player 1 movement
     if (right) {rotateTo(bots.at(0), turn_angle);}
     if (left) {rotateTo(bots.at(0), -turn_angle);}
-    if (down) {moveTo(bots.at(0), -speed, -bots.at(0).sprite.getRotation());}
-    else if (up) {moveTo(bots.at(0), speed, -bots.at(0).sprite.getRotation());}
+    if (down) {moveTo(bots.at(0), -speed, -bots.at(0).sprite.getRotation()); bots.at(0).direction = 2;}
+    else if (up) {moveTo(bots.at(0), speed, -bots.at(0).sprite.getRotation()); bots.at(0).direction = 1;}
     if (!up && !down) {
         bots.at(0).velX = 0;
         bots.at(0).velY = 0;
+        bots.at(0).direction = 0;
     }
 
     //Player 2 movement
     if (right2) {rotateTo(bots.at(1), turn_angle);}
     if (left2) {rotateTo(bots.at(1), -turn_angle);}
-    if (down2) {moveTo(bots.at(1), -speed, -bots.at(1).sprite.getRotation());}
-    else if (up2) {moveTo(bots.at(1), speed, -bots.at(1).sprite.getRotation());}
+    if (down2) {moveTo(bots.at(1), -speed, -bots.at(1).sprite.getRotation()); bots.at(1).direction = 2;}
+    else if (up2) {moveTo(bots.at(1), speed, -bots.at(1).sprite.getRotation()); bots.at(1).direction = 1;}
     if (!up2 && !down2) {
         bots.at(1).velX = 0;
         bots.at(1).velY = 0;
+        bots.at(1).direction = 0;
     }
 
     for (int i = 0; i < blocks.size(); i++) {
@@ -139,6 +143,33 @@ int Game::whichBotAttached(Block block) {
     return -1;
 }
 
+float Game::getAngle(Block& block, Robot& robot) {
+    float delta_x = block.x - robot.x;
+    float delta_y = robot.y - block.y;
+    float dy_dx = delta_y / delta_x;
+    float angle = atan(dy_dx);
+    angle *= 180/PI;
+    angle += 90;
+    return angle;
+}
+
+int Game::whichSide(Block& block, Robot& robot) {
+    float angle = getAngle(block, robot);
+    float min_angle = simplifiedAngle(robot.sprite.getRotation() - 45);
+    float max_angle = simplifiedAngle(robot.sprite.getRotation() + 45);
+
+    //cout << angle << endl;
+
+    if (min_angle < angle && max_angle > angle) {
+        //front
+        //cout << "front" << endl;
+        return 1;
+    } else {
+        //cout << "back" << endl;
+        return 0;
+    }
+}
+
 float Game::getVelX(float spd, float angle) {
     angle -= 180;
     angle *= PI/180;
@@ -149,4 +180,17 @@ float Game::getVelY(float spd, float angle) {
     angle -= 180;
     angle *= PI/180;
     return spd * cos(angle);
+}
+
+float Game::simplifiedAngle(float angle) {
+    if (angle >= 0) {
+        while (angle >= 180) {
+            angle -= 360;
+        }
+    } else {
+        while (angle <= -180) {
+            angle += 360;
+        }
+    }
+    return angle;
 }

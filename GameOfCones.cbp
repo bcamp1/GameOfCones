@@ -45,7 +45,6 @@
 		<Unit filename="Robot.h" />
 		<Unit filename="include/Block.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="src/Block.cpp" />
 		<Extensions>
 			<envvars />
 			<code_completion />

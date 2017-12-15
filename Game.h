@@ -22,6 +22,10 @@ class Game
         void moveTo(Entity& entity, float spd, float angle);
         void rotateTo(Entity& entity, float angle);
 
+        float getAngle (Block& block, Robot& robot);
+        int whichSide (Block& block, Robot& robot);
+        float simplifiedAngle(float angle);
+
         float getVelX(float spd, float angle);
         float getVelY(float spd, float angle);
 

@@ -9,6 +9,10 @@ class Robot: public Entity
 {
     public:
         int team;
+        int direction = 0;
+        //Forward = 1
+        //Backward = 2
+        //None = 0
         Robot(float x, float y, int t) : Entity({100, 100}, {x, y}, "robot-red.png"), team(t) {
             sprite.setOrigin(50, 50);
             if (team == 0) {
