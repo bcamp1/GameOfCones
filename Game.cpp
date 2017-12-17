@@ -21,6 +21,8 @@ Game::Game()
     for (int i = 0; i < 8; i++) {
         blocks.push_back(Block(1, -100*i + 800, 100*i + 100));
     }
+    blocks.at(7).x = 500;
+    blocks.at(7).y = 500;
 
     bots.push_back(Robot(939, 939, 0)); //Player1
     bots.push_back(Robot(61, 61, 1));   //Player2
@@ -40,7 +42,7 @@ Game::Game()
 
 void Game::loop()
 {
-    whichSide(blocks.at(7), bots.at(0));
+    //whichSide(blocks.at(7), bots.at(0));
     keyboard();
     //Player 1 movement
     if (right) {rotateTo(bots.at(0), turn_angle);}
@@ -67,9 +69,19 @@ void Game::loop()
     for (int i = 0; i < blocks.size(); i++) {
         int which = whichBotAttached(blocks.at(i));
         if (which != -1) {
-            blocks.at(i).velX = bots.at(which).velX;
-            blocks.at(i).velY = bots.at(which).velY;
-            blocks.at(i).sprite.setRotation(bots.at(which).sprite.getRotation());
+            if (bots.at(which).direction == 2) {
+                if (!isFront(blocks.at(i), bots.at(which))) {
+                    blocks.at(i).velX = bots.at(which).velX;
+                    blocks.at(i).velY = bots.at(which).velY;
+                    blocks.at(i).sprite.setRotation(bots.at(which).sprite.getRotation());
+                }
+            } else {
+                if (isFront(blocks.at(i), bots.at(which))) {
+                    blocks.at(i).velX = bots.at(which).velX;
+                    blocks.at(i).velY = bots.at(which).velY;
+                    blocks.at(i).sprite.setRotation(bots.at(which).sprite.getRotation()); 
+                }
+            }
         } else {
             blocks.at(i).velX = 0;
             blocks.at(i).velY = 0;
@@ -98,6 +110,8 @@ void Game::render(sf::RenderWindow& window) {
     for (int i = 0; i < blocks.size(); i++) {
         blocks.at(i).show(window);
     }
+
+    blocks.at(7).show(window);
 }
 
 void Game::events(sf::RenderWindow& window) {
@@ -144,30 +158,24 @@ int Game::whichBotAttached(Block block) {
 }
 
 float Game::getAngle(Block& block, Robot& robot) {
-    float delta_x = block.x - robot.x;
-    float delta_y = robot.y - block.y;
-    float dy_dx = delta_y / delta_x;
-    float angle = atan(dy_dx);
-    angle *= 180/PI;
-    angle += 90;
+    float bx = block.x, by = block.y, rx = robot.x, ry = robot.y;
+    float dx = bx - rx;
+    float dy = ry - by;
+    float angle = atan (dx / dy) * 180/PI;
+    if (by > ry) {
+        return angle + 180;
+    }
     return angle;
 }
 
-int Game::whichSide(Block& block, Robot& robot) {
+bool Game::isFront(Block& block, Robot& robot) {
+    float min_angle, max_angle;
     float angle = getAngle(block, robot);
-    float min_angle = simplifiedAngle(robot.sprite.getRotation() - 45);
-    float max_angle = simplifiedAngle(robot.sprite.getRotation() + 45);
-
-    //cout << angle << endl;
-
-    if (min_angle < angle && max_angle > angle) {
-        //front
-        //cout << "front" << endl;
-        return 1;
-    } else {
-        //cout << "back" << endl;
-        return 0;
+    findMinMax(robot, min_angle, max_angle);
+    if (between(angle, min_angle, max_angle)) {
+        return true;
     }
+    return false;
 }
 
 float Game::getVelX(float spd, float angle) {
@@ -182,15 +190,31 @@ float Game::getVelY(float spd, float angle) {
     return spd * cos(angle);
 }
 
-float Game::simplifiedAngle(float angle) {
-    if (angle >= 0) {
-        while (angle >= 180) {
-            angle -= 360;
-        }
-    } else {
-        while (angle <= -180) {
-            angle += 360;
-        }
+bool Game::between(float angle, float min, float max) {
+    while (angle < min) {
+        angle += 360;
+    }
+    if (min < angle && max > angle) {
+        return true;
+    }
+    return false;
+}
+
+float Game::simpAngle(float angle) {
+    while (angle >= 360) {
+        angle -= 360;
+    }
+    while (angle < 0) {
+        angle += 360;
     }
     return angle;
+}
+
+void Game::findMinMax(Robot bot, float& min_angle, float& max_angle) {
+    float angle = bot.sprite.getRotation();
+    min_angle = simpAngle(angle - 45);
+    max_angle = simpAngle(angle + 45);
+    while (max_angle < min_angle) {
+        max_angle += 360;
+    }
 }
