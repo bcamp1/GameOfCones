@@ -22,11 +22,17 @@ class Game
         void moveTo(Entity& entity, float spd, float angle);
         void rotateTo(Entity& entity, float angle);
 
+        float getAngle (Block& block, Robot& robot);
+        bool isFront (Block& block, Robot& robot);
+
         float getVelX(float spd, float angle);
         float getVelY(float spd, float angle);
+        bool between(float angle, float min, float max);
+        float simpAngle(float angle);
+        void findMinMax(Robot bot, float& min_angle, float& max_angle);
 
         const float turn_angle = 1.25;
-        const float speed = 2.5;
+        const float speed = 2.0;
 
         sf::Texture arena_tx;
         sf::Sprite arena;

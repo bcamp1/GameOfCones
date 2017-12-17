@@ -21,6 +21,8 @@ Game::Game()
     for (int i = 0; i < 8; i++) {
         blocks.push_back(Block(1, -100*i + 800, 100*i + 100));
     }
+    blocks.at(7).x = 500;
+    blocks.at(7).y = 500;
 
     bots.push_back(Robot(939, 939, 0)); //Player1
     bots.push_back(Robot(61, 61, 1));   //Player2
@@ -38,34 +40,48 @@ Game::Game()
 
 }
 
-void Game::loop() {
+void Game::loop()
+{
+    //whichSide(blocks.at(7), bots.at(0));
     keyboard();
     //Player 1 movement
     if (right) {rotateTo(bots.at(0), turn_angle);}
     if (left) {rotateTo(bots.at(0), -turn_angle);}
-    if (down) {moveTo(bots.at(0), -speed, -bots.at(0).sprite.getRotation());}
-    else if (up) {moveTo(bots.at(0), speed, -bots.at(0).sprite.getRotation());}
+    if (down) {moveTo(bots.at(0), -speed, -bots.at(0).sprite.getRotation()); bots.at(0).direction = 2;}
+    else if (up) {moveTo(bots.at(0), speed, -bots.at(0).sprite.getRotation()); bots.at(0).direction = 1;}
     if (!up && !down) {
         bots.at(0).velX = 0;
         bots.at(0).velY = 0;
+        bots.at(0).direction = 0;
     }
 
     //Player 2 movement
     if (right2) {rotateTo(bots.at(1), turn_angle);}
     if (left2) {rotateTo(bots.at(1), -turn_angle);}
-    if (down2) {moveTo(bots.at(1), -speed, -bots.at(1).sprite.getRotation());}
-    else if (up2) {moveTo(bots.at(1), speed, -bots.at(1).sprite.getRotation());}
+    if (down2) {moveTo(bots.at(1), -speed, -bots.at(1).sprite.getRotation()); bots.at(1).direction = 2;}
+    else if (up2) {moveTo(bots.at(1), speed, -bots.at(1).sprite.getRotation()); bots.at(1).direction = 1;}
     if (!up2 && !down2) {
         bots.at(1).velX = 0;
         bots.at(1).velY = 0;
+        bots.at(1).direction = 0;
     }
 
     for (int i = 0; i < blocks.size(); i++) {
         int which = whichBotAttached(blocks.at(i));
         if (which != -1) {
-            blocks.at(i).velX = bots.at(which).velX;
-            blocks.at(i).velY = bots.at(which).velY;
-            blocks.at(i).sprite.setRotation(bots.at(which).sprite.getRotation());
+            if (bots.at(which).direction == 2) {
+                if (!isFront(blocks.at(i), bots.at(which))) {
+                    blocks.at(i).velX = bots.at(which).velX;
+                    blocks.at(i).velY = bots.at(which).velY;
+                    blocks.at(i).sprite.setRotation(bots.at(which).sprite.getRotation());
+                }
+            } else {
+                if (isFront(blocks.at(i), bots.at(which))) {
+                    blocks.at(i).velX = bots.at(which).velX;
+                    blocks.at(i).velY = bots.at(which).velY;
+                    blocks.at(i).sprite.setRotation(bots.at(which).sprite.getRotation()); 
+                }
+            }
         } else {
             blocks.at(i).velX = 0;
             blocks.at(i).velY = 0;
@@ -94,6 +110,8 @@ void Game::render(sf::RenderWindow& window) {
     for (int i = 0; i < blocks.size(); i++) {
         blocks.at(i).show(window);
     }
+
+    blocks.at(7).show(window);
 }
 
 void Game::events(sf::RenderWindow& window) {
@@ -139,6 +157,27 @@ int Game::whichBotAttached(Block block) {
     return -1;
 }
 
+float Game::getAngle(Block& block, Robot& robot) {
+    float bx = block.x, by = block.y, rx = robot.x, ry = robot.y;
+    float dx = bx - rx;
+    float dy = ry - by;
+    float angle = atan (dx / dy) * 180/PI;
+    if (by > ry) {
+        return angle + 180;
+    }
+    return angle;
+}
+
+bool Game::isFront(Block& block, Robot& robot) {
+    float min_angle, max_angle;
+    float angle = getAngle(block, robot);
+    findMinMax(robot, min_angle, max_angle);
+    if (between(angle, min_angle, max_angle)) {
+        return true;
+    }
+    return false;
+}
+
 float Game::getVelX(float spd, float angle) {
     angle -= 180;
     angle *= PI/180;
@@ -149,4 +188,33 @@ float Game::getVelY(float spd, float angle) {
     angle -= 180;
     angle *= PI/180;
     return spd * cos(angle);
+}
+
+bool Game::between(float angle, float min, float max) {
+    while (angle < min) {
+        angle += 360;
+    }
+    if (min < angle && max > angle) {
+        return true;
+    }
+    return false;
+}
+
+float Game::simpAngle(float angle) {
+    while (angle >= 360) {
+        angle -= 360;
+    }
+    while (angle < 0) {
+        angle += 360;
+    }
+    return angle;
+}
+
+void Game::findMinMax(Robot bot, float& min_angle, float& max_angle) {
+    float angle = bot.sprite.getRotation();
+    min_angle = simpAngle(angle - 45);
+    max_angle = simpAngle(angle + 45);
+    while (max_angle < min_angle) {
+        max_angle += 360;
+    }
 }
