@@ -8,3 +8,4 @@ src/
 *.o
 sfml-app
 .DS_STORE
+*.h.gch
