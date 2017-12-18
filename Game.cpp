@@ -45,10 +45,10 @@ void Game::loop()
     //whichSide(blocks.at(7), bots.at(0));
     keyboard();
     //Player 1 movement
-    if (right) {rotateTo(bots.at(0), turn_angle);}
-    if (left) {rotateTo(bots.at(0), -turn_angle);}
-    if (down) {moveTo(bots.at(0), -speed, -bots.at(0).sprite.getRotation()); bots.at(0).direction = 2;}
-    else if (up) {moveTo(bots.at(0), speed, -bots.at(0).sprite.getRotation()); bots.at(0).direction = 1;}
+    if (right) {rotateTo(0, turn_angle);}
+    if (left) {rotateTo(0, -turn_angle);}
+    if (down) {moveTo(0, -speed, -bots.at(0).sprite.getRotation()); bots.at(0).direction = 2;}
+    else if (up) {moveTo(0, speed, -bots.at(0).sprite.getRotation()); bots.at(0).direction = 1;}
     if (!up && !down) {
         bots.at(0).velX = 0;
         bots.at(0).velY = 0;
@@ -56,10 +56,10 @@ void Game::loop()
     }
 
     //Player 2 movement
-    if (right2) {rotateTo(bots.at(1), turn_angle);}
-    if (left2) {rotateTo(bots.at(1), -turn_angle);}
-    if (down2) {moveTo(bots.at(1), -speed, -bots.at(1).sprite.getRotation()); bots.at(1).direction = 2;}
-    else if (up2) {moveTo(bots.at(1), speed, -bots.at(1).sprite.getRotation()); bots.at(1).direction = 1;}
+    if (right2) {rotateTo(1, turn_angle);}
+    if (left2) {rotateTo(1, -turn_angle);}
+    if (down2) {moveTo(1, -speed, -bots.at(1).sprite.getRotation()); bots.at(1).direction = 2;}
+    else if (up2) {moveTo(1, speed, -bots.at(1).sprite.getRotation()); bots.at(1).direction = 1;}
     if (!up2 && !down2) {
         bots.at(1).velX = 0;
         bots.at(1).velY = 0;
@@ -124,27 +124,37 @@ void Game::events(sf::RenderWindow& window) {
     }
 }
 
-void Game::rotateBot(Robot& bot, float angle) {
-    bot.sprite.setRotation(angle);
-}
-
-void Game::moveTo(Entity& entity, float spd, float angle) {
-    entity.sprite.move({getVelX(spd, angle), getVelY(spd, angle)});
-    if (!Collision::PixelPerfectTest(entity.sprite, walls, 0)) {
-        entity.sprite.move({-getVelX(spd, angle), -getVelY(spd, angle)});
-        entity.velX = getVelX(spd, angle);
-        entity.velY = getVelY(spd, angle);
+void Game::moveTo(int index, float spd, float angle) {
+    bots.at(index).sprite.move({getVelX(spd, angle), getVelY(spd, angle)});
+    if (!Collision::PixelPerfectTest(bots.at(index).sprite, walls, 0)) {
+        if (!hitBot(index)) {
+            bots.at(index).sprite.move({-getVelX(spd, angle), -getVelY(spd, angle)});
+            bots.at(index).velX = getVelX(spd, angle);
+            bots.at(index).velY = getVelY(spd, angle);
+        } else {
+            bots.at(index).velX = -getVelX(spd, angle) / 2;
+            bots.at(index).velY = -getVelY(spd, angle) / 2; 
+        }
     } else {
-        entity.velX = 0;
-        entity.velY = 0;
+        bots.at(index).velX = 0;
+        bots.at(index).velY = 0;
     }
 }
 
-void Game::rotateTo(Entity& entity, float angle) {
-    entity.sprite.rotate(angle);
-    if (Collision::PixelPerfectTest(entity.sprite, walls, 0)) {
-        entity.sprite.rotate(-angle);
+void Game::rotateTo(int index, float angle) {
+    bots.at(index).sprite.rotate(angle);
+    if (Collision::PixelPerfectTest(bots.at(index).sprite, walls, 0) || hitBot(index)) {
+        bots.at(index).sprite.rotate(-angle);
     }
+}
+
+bool Game::hitBot(int index) {
+    for(int i = 0; i < 4; i++) {
+        if (i != index && Collision::BoundingBoxTest(bots.at(index).sprite, bots.at(i).sprite)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 //If returned -1, block isn't attached to a bot

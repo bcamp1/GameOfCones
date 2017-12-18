@@ -13,18 +13,18 @@ class Game
         void events(sf::RenderWindow & window);
         void keyboard();
         void loop();
-        void rotateBot(Robot& bot, float angle);
+
         const float screenWidth = 1000;
         const float screenHeight = 1000;
         bool up = false, down = false, left = false, right = false;
         bool up2 = false, down2 = false, left2 = false, right2 = false;
         int whichBotAttached(Block block);
-        void moveTo(Entity& entity, float spd, float angle);
-        void rotateTo(Entity& entity, float angle);
+        void moveTo(int index, float spd, float angle);
+        void rotateTo(int index, float angle);
+        bool hitBot(int index);
 
         float getAngle (Block& block, Robot& robot);
         bool isFront (Block& block, Robot& robot);
-
         float getVelX(float spd, float angle);
         float getVelY(float spd, float angle);
         bool between(float angle, float min, float max);
