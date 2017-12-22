@@ -34,7 +34,7 @@ class Game
 
         const float turn_angle = 1.25;
         const float speed = 2.0;
-        const bool showFramerate = true;
+        bool showFramerate = true;
 
         sf::Texture arena_tx;
         sf::Sprite arena;
