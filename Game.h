@@ -32,8 +32,8 @@ class Game
         void findMinMax(Robot bot, float& min_angle, float& max_angle);
         string floatToString(float f, int precision);
 
-        const float turn_angle = 1.25;
-        const float speed = 2.0;
+        const float turn_angle = 3;
+        const float speed = 5;
         bool showFramerate = true;
 
         sf::Texture arena_tx;
