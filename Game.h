@@ -30,12 +30,17 @@ class Game
         bool between(float angle, float min, float max);
         float simpAngle(float angle);
         void findMinMax(Robot bot, float& min_angle, float& max_angle);
+        string floatToString(float f, int precision);
 
         const float turn_angle = 1.25;
         const float speed = 2.0;
+        const bool showFramerate = true;
 
         sf::Texture arena_tx;
         sf::Sprite arena;
+        sf::Clock clock;
+        sf::Text fpsText;
+        sf::Font font;
 
         sf::Texture walls_tx;
         sf::Sprite walls;

@@ -4,9 +4,11 @@
 #include <iostream>
 #include <math.h>
 #include "Collision.h"
+#include <iomanip> // setprecision
+#include <sstream> // stringstream
 #define PI 3.14159265
 using namespace std;
-
+//Framerate branch
 
 Game::Game()
 {
@@ -28,9 +30,21 @@ Game::Game()
     bots.push_back(Robot(61, 61, 1));   //Player2
     bots.push_back(Robot(820, 939, 0)); //bot1
     bots.push_back(Robot(180, 61, 1));  //bot2
+    window.setFramerateLimit(60);
+
+    //Set up FPS Text
+    font.loadFromFile("RobotoMono-Medium.ttf");
+    fpsText.setFont(font);
+    fpsText.setCharacterSize(20);
+    fpsText.setPosition({3, 3}); 
+    fpsText.setColor(sf::Color::Green);
 
     while (window.isOpen())
-    {
+    { 
+        if (showFramerate) {
+            float fps = 1 / clock.restart().asSeconds();
+            fpsText.setString(floatToString(fps, 1) + " FPS");
+        }
         events(window);
         loop();
         window.clear();
@@ -42,8 +56,8 @@ Game::Game()
 
 void Game::loop()
 {
-    //whichSide(blocks.at(7), bots.at(0));
     keyboard();
+
     //Player 1 movement
     if (right) {rotateTo(0, turn_angle);}
     if (left) {rotateTo(0, -turn_angle);}
@@ -90,11 +104,13 @@ void Game::loop()
 }
 
 void Game::keyboard() {
+    //P1
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {right = true;} else {right = false;}
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {left = true;} else {left = false;}
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {up = true;} else {up = false;}
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {down = true;} else {down = false;}
 
+    //P2
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {right2 = true;} else {right2 = false;}
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {left2 = true;} else {left2 = false;}
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {up2 = true;} else {up2 = false;}
@@ -112,6 +128,9 @@ void Game::render(sf::RenderWindow& window) {
     }
 
     blocks.at(7).show(window);
+    if (showFramerate) {
+        window.draw(fpsText);
+    }
 }
 
 void Game::events(sf::RenderWindow& window) {
@@ -227,4 +246,10 @@ void Game::findMinMax(Robot bot, float& min_angle, float& max_angle) {
     while (max_angle < min_angle) {
         max_angle += 360;
     }
+}
+
+string Game::floatToString(float f, int precision) {
+    stringstream stream;
+    stream << fixed << setprecision(precision) << f;
+    return stream.str();
 }
