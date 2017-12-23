@@ -8,7 +8,6 @@
 #include <sstream> // stringstream
 #define PI 3.14159265
 using namespace std;
-//Framerate branch
 
 Game::Game()
 {
