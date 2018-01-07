@@ -9,3 +9,4 @@ src/
 sfml-app
 .DS_STORE
 *.h.gch
+.vscode/
