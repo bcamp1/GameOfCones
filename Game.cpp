@@ -34,9 +34,17 @@ Game::Game()
     //Set up FPS Text
     font.loadFromFile("RobotoMono-Medium.ttf");
     fpsText.setFont(font);
-    fpsText.setCharacterSize(20);
-    fpsText.setPosition({3, 3}); 
-    fpsText.setColor(sf::Color::Green);
+    fpsText.setCharacterSize(30);
+    fpsText.setPosition({1020, 960}); 
+    fpsText.setColor(sf::Color::White);
+
+    //Set up Score Text
+    scoreText.setFont(font);
+    scoreText.setCharacterSize(40);
+    scoreText.setPosition({1020, 3}); 
+    scoreText.setColor(sf::Color::White);
+
+    cout << blueScore << endl;
 
     while (window.isOpen())
     { 
@@ -44,9 +52,14 @@ Game::Game()
             float fps = 1 / clock.restart().asSeconds();
             fpsText.setString(floatToString(fps, 1) + " FPS");
         }
+        
+        if (showScore) {
+            scoreText.setString("Blue: " + std::to_string(blueScore) + "\nRed: " + std::to_string(redScore));
+        }
+
         events(window);
         loop();
-        window.clear();
+        window.clear(sf::Color(34, 34, 34));
         render(window);
         window.display();
     }
@@ -130,6 +143,9 @@ void Game::render(sf::RenderWindow& window) {
     if (showFramerate) {
         window.draw(fpsText);
     }
+    if (showScore) {
+        window.draw(scoreText);
+    }
 }
 
 void Game::events(sf::RenderWindow& window) {
@@ -145,6 +161,9 @@ void Game::events(sf::RenderWindow& window) {
                 switch (event.key.code) {
                     case sf::Keyboard::F:
                         showFramerate = !showFramerate;
+                        break;
+                    case sf::Keyboard::P:
+                        showScore = !showScore;
                         break;
                     case sf::Keyboard::Escape:
                         window.close();
